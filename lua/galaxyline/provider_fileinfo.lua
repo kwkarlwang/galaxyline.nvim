@@ -1,27 +1,42 @@
 local vim = vim
 local M = {}
 
-local function file_readonly(readonly_icon)
+local function buffer_is_readonly()
   if vim.bo.filetype == "help" then
-    return ""
+    return false
   end
-  local icon = readonly_icon or ""
-  if vim.bo.readonly == true then
-    return " " .. icon .. " "
-  end
-  return ""
+  return vim.bo.readonly
 end
 
--- get current file name
-function M.get_current_file_name(readonly_icon)
-  local file = vim.fn.expand("%:t")
+local function file_with_icons(file, modified_icon, readonly_icon)
   if vim.fn.empty(file) == 1 then
     return ""
   end
-  if string.len(file_readonly(readonly_icon)) ~= 0 then
-    return file .. file_readonly(readonly_icon)
+
+  modified_icon = modified_icon or ""
+  readonly_icon = readonly_icon or ""
+
+  if buffer_is_readonly() then
+    file = readonly_icon .. " " .. file
   end
-  return file .. " "
+
+  if vim.bo.modifiable and vim.bo.modified then
+    file = file .. " " .. modified_icon
+  end
+
+  return " " .. file .. " "
+end
+
+-- get current file name
+function M.get_current_file_name(modified_icon, readonly_icon)
+  local file = vim.fn.expand("%:t")
+  return file_with_icons(file, modified_icon, readonly_icon)
+end
+
+-- get current file path
+function M.get_current_file_path(modified_icon, readonly_icon)
+  local filepath = vim.fn.fnamemodify(vim.fn.expand "%", ":~:.")
+  return file_with_icons(filepath, modified_icon, readonly_icon)
 end
 
 -- format print current file size
@@ -150,7 +165,7 @@ function M.get_file_icon()
     elseif user_icons[f_extension] ~= nil then
       icon = user_icons[f_extension][2]
     else
-      icon = ""
+      icon = ""
     end
   end
   return icon .. " "
