@@ -165,7 +165,7 @@ function M.get_file_icon()
     elseif user_icons[f_extension] ~= nil then
       icon = user_icons[f_extension][2]
     else
-      icon = ""
+      icon = " "
     end
   end
   return icon .. " "
