@@ -81,7 +81,7 @@ end
 function M.line_column()
   local line = vim.fn.line(".")
   local column = vim.fn.col(".")
-  return string.format("%d:%2d ", line, column)
+  return string.format("%3d:%-2d ", line, column)
 end
 
 -- show current line percent of all lines
