@@ -27,6 +27,17 @@ local function file_with_icons(file, modified_icon, readonly_icon)
   return " " .. file .. " "
 end
 
+local split = function(inputstr, sep)
+  if sep == nil then
+    sep = "%s"
+  end
+  local t = {}
+  for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
+    table.insert(t, str)
+  end
+  return t
+end
+
 -- get current file name
 function M.get_current_file_name(modified_icon, readonly_icon)
   local file = vim.fn.expand("%:t")
@@ -34,9 +45,12 @@ function M.get_current_file_name(modified_icon, readonly_icon)
 end
 
 -- get current file path
-function M.get_current_file_path(modified_icon, readonly_icon)
+function M.get_current_file_path()
   local filepath = vim.fn.fnamemodify(vim.fn.expand "%", ":~:.")
-  return file_with_icons(filepath, modified_icon, readonly_icon)
+  local splitpath = split(filepath, "/")
+  splitpath[#splitpath] = ""
+  filepath = table.concat(splitpath, "/")
+  return filepath
 end
 
 -- format print current file size
