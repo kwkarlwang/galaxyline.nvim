@@ -17,10 +17,10 @@ local function file_with_icons(file, modified_icon, readonly_icon)
   readonly_icon = readonly_icon or ""
 
   if buffer_is_readonly() then
-    file = readonly_icon .. " " .. file
+    file = file .. " " .. readonly_icon
   end
 
-  if vim.bo.modifiable and vim.bo.modified then
+  if vim.bo.modifiable and vim.bo.modified and modified_icon ~= "" then
     file = file .. " " .. modified_icon
   end
 
@@ -81,7 +81,7 @@ end
 function M.line_column()
   local line = vim.fn.line(".")
   local column = vim.fn.col(".")
-  return string.format("%d:%d ", line, column)
+  return string.format("%d:%2d ", line, column)
 end
 
 -- show current line percent of all lines
